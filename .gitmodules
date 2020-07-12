@@ -1,0 +1,3 @@
+[submodule "stargan-v2"]
+	path = stargan-v2
+	url = https://github.com/HyelinNAM/stargan-v2.git
