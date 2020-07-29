@@ -1,6 +1,7 @@
 # Gender Classifier with ResNet
 import os
 import random
+import json
 import pandas as pd
 import numpy as np
 import torch
@@ -10,34 +11,59 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-from Gender_utils import CustomDataset,early_stopping_and_save_model
-from Gender_models import GenderClassifier
+from Style_utils import CustomDataset,early_stopping_and_save_model
+from Style_models import GenderClassifier
+
 
 class GenderClassifier(self):
-    def __init__(self):
+    def __init__(self, mode = 'train'):
+        self.mode = mode
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        
-        data_F_path = 'drive/My Drive/Adv_개인/Adv_공유/Data/Face' # Face
-        label_F_path = 'drive/My Drive/BOAZ Adv_GAN/Adv_공유/Data/face.csv' # 라벨링한 데이터와 path 같음. 수정해야
-        data_C_path = 'drive/My Drive/BOAZ Adv/Data/CelebA-HQ'# CelebA-Hq
-        label_C_path = 'drive/My Drive/BOAZ Adv_GAN/Adv_공유/Data/CelebA.csv' # 추가해야
 
-        self.path = {'data_F_path':data_F_path,'label_F_path':label_F_path,'data_C_path':data_C_path, 'label_C_path':label_C_path}
+        manualSeed = 999
+        print("Random seed:",manualSeed)
+        random.seed(manualSeed)
+        torch.manual_seed(manualSeed)
+
+        if self.mode == 'train':
+            data_F_path = 'drive/My Drive/Data/Face' # Face
+            label_F_path = 'drive/My Drive/Data/face.csv'
+            data_C_path = 'drive/My Drive/Data/CelebA-HQ'# CelebA-HQ
+            label_C_path = 'drive/My Drive/Data/CelebA.csv'
+
+            self.path = {'data_F_path':data_F_path,'label_F_path':label_F_path,'data_C_path':data_C_path, 'label_C_path':label_C_path}
+
+        elif self.mode == 'test':
+            self.path = 'drive/My Drive/Data/Face'
 
     def __call__(self):
-        print("Making Custom dataset...")
-        self.Face = self.mkdataset()
-        train_sampler, valid_sampler, test_sampler = self.datasplit(valid_ratio=0.15,test_ratio=0.15)
 
-        train = DataLoader(self.Face,sampler=train_sampler,batch_size=16,drop_last=True)
-        valid = DataLoader(self.Face,sampler=valid_sampler,batch_size=16,drop_last=True)
-        test = DataLoader(self.Face,sampler=test_sampler,batch_size=16,drop_last=True)
+        if self.mode == 'train':
+            print("Making Custom dataset...")
+            Face = self.mk_dataset()
+            train_sampler, valid_sampler = self.data_split(valid_ratio=0.2)
 
-        print(f'Number of Dataset: train-{len(train)} valid-{len(valid)} test-{len(test)}')
+            train = DataLoader(Face,sampler=train_sampler,batch_size=16,drop_last=True)
+            valid = DataLoader(Face,sampler=valid_sampler,batch_size=16,drop_last=True)
 
-        self.train(train,valid,test)
+            print(f'Number of Dataset: train-{len(train)} valid-{len(valid)}')
+
+            self.train(train,valid)
+
+        elif self.mode == 'test':
+            print("Making Custom dataset...")
+            Face = self.mk_dataset()
+
+            test = DataLoader(Face,batch_size=16)
+
+            self.test(test)
+
+            return results
+
+        else
+            raise Exception('Wrong mode!')
         
-    def mkdataset(self):
+    def mk_dataset(self):
         transform = transforms.Compose([
         transforms.Resize((256,256)),
         transforms.ToTensor(),
@@ -51,16 +77,22 @@ class GenderClassifier(self):
         transforms.Normalize([0.5],[0.5]),
         ])
 
-        Face_F = CustomDataset(self.path['data_F_path'],self.path['label_F_path'],transform)
-        Face_F_aug = CustomDataset(self.path['data_F_path'],self.path['label_F_path'],transform2)
-        Face_C = CustomDataset(self.path['data_C_path'],self.path['label_C_path'],transform)
-        Face_C_aug = CustomDataset(self.path['data_C_path'],self.path['label_C_path'],transform2)
-        
-        Face = ConcatDataset([Face_F,Face_F_aug,Face_C,Face_C_aug])
+        if self.mode == 'train':
+            Face_F = CustomDataset(self.path['data_F_path'],self.path['label_F_path'],transform)
+            Face_F_aug = CustomDataset(self.path['data_F_path'],self.path['label_F_path'],transform2)
+            Face_C = CustomDataset(self.path['data_C_path'],self.path['label_C_path'],transform)
+            Face_C_aug = CustomDataset(self.path['data_C_path'],self.path['label_C_path'],transform2)
+            
+            Face = ConcatDataset([Face_F,Face_F_aug,Face_C,Face_C_aug])
 
-        return Face
+            return Face
 
-    def datasplit(valid_ratio,test_ratio):
+        else:
+            Face = CustomDataset(self.path,transform)
+
+            return Face
+
+    def data_split(valid_ratio):
         np.random.seed(777)
 
         size = len(self.Face)
@@ -69,23 +101,27 @@ class GenderClassifier(self):
         np.random.shuffle(indices)
 
         split_valid = int(np.floor(size*valid_ratio))
-        split_test = split_valid+int(np.floor(size*test_ratio))
 
-        train_indices, val_indices, test_indices = indices[split_test:],indices[:split_valid], indices[split_valid:split_test]
+        train_indices, val_indices = indices[split_valid:],indices[:split_valid]
 
         train_sampler = SubsetRandomSampler(train_indices)
         valid_sampler = SubsetRandomSampler(val_indices)
-        test_sampler = SubsetRandomSampler(test_indices)
 
-        return train_sampler,valid_sampler,test_sampler
+        return train_sampler,valid_sampler
 
-    def train(train,valid,test,epochs=200):
+    def train(train,valid,epochs=200):
 
         # For ealry stopping
         torch_model_name = "GenderClassifier"
         early_stopping_patience = 15
 
-        print("Training Start...!")
+        print("Start Training...!")
+
+        Net = GenderClassifier()
+        Net.to(self.device)
+
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(GenderClassifier.parameters(),lr=0.001,betas=(0.5,0.999))
 
         running_loss_list = []
         valid_loss_list = []
@@ -98,11 +134,6 @@ class GenderClassifier(self):
             total = 0
             correct = 0
 
-            Net = GenderClassifier()
-            Net.to(self.device)
-
-            criterion = nn.CrossEntropyLoss()
-            optimizer = optim.Adam(GenderClassifier.parameters(),lr=0.001,betas=(0.5,0.999))
 
             for i, data in enumerate(train,0):
                 img, label = data
@@ -159,7 +190,44 @@ class GenderClassifier(self):
 
                 print(f'[{epoch+1}/{epochs}] val_loss = {valid_loss/len(valid) :.3f} \t ### Accuracy = {100 * correct/total :.2f}% ### \n')
 
-        print('Finished Training')
+        print('Finished')
+    
+    def test(test):
+        
+        Net = GenderClassifier()
+        Net = torch.load('drive/My Drive/model/GenderClassifier')
+        Net.to(self.device)
+
+        Net.eval()
+
+        results=[]
+
+        print("Start Testing...!")
+
+        for i, data in enumerate(test,0):
+
+            img,_ = data
+            img = img.to(self.device)
+
+            gender = Net(img)
+            
+            _, gender = torch.max(gender,1)
+
+            results.append(gender.tolist())
+
+        with open('drive/My Drive/results/Gender.json','w') as f:
+            json.dump(results,f)
+
+        print('Finished')
+
+        return results
+
+
+if __name__ == "__main__":
+    model = GenderClassifier()
+    results = model(mode = 'test') # or mode = 'train'
+
+
 
 
 

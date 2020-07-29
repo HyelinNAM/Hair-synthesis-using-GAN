@@ -6,14 +6,14 @@ class CustomDataset(Dataset):
     def __init__(self,data_path,csv_path,transform=None):
         self.data_path = data_path
         self.csv_path = csv_path
+        self.label_arr = np.asarray(pd.read_csv(self.csv_path))
     
     def __len__(self):
         return len(self.label_arr)
     
     def __getitem__(self,idx):
         image = dset.ImageFolder(root=self.data_path,transform=transform)[idx][0]
-        label_arr = np.asarray(pd.read_csv(self.csv_path))
-        label = label_arr[idx]
+        label = self.label_arr[idx]
 
         return (image, label)
 
