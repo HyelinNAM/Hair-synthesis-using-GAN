@@ -1,2 +1,13 @@
 # VSCode
 .vscode/*
+
+# pretrained_network
+pretrained_network/*
+
+# pyc
+__pycache__/
+*.pyc
+
+# results folder
+styles_test/
+results/
