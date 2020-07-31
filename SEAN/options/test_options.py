@@ -19,7 +19,8 @@ class TestOptions(BaseOptions):
         parser.add_argument('--status', type=str, default='test')
         parser.add_argument('--styling_mode', type=str, default='dyeing',
                         choices=['dyeing', 'styling'])
-        parser.add_argument('--mode', type=str, default='NONE')
+        parser.add_argument('--mode', type=str, default='NONE') # for working
+        parser.add_argument('--target_domain', type=str, default='NONE') #for working
 
         self.isTrain = False
         return parser

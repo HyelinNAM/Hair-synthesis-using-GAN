@@ -67,9 +67,6 @@ if __name__ == '__main__':
     # for styling_rand
     parser.add_argument('--target_domain', type=int, default=0)
     parser.add_argument('--num_outs_per_domain', type=int, default=3)
-
-    # SEAN
-    
     
     args = parser.parse_args()
     main(args)
