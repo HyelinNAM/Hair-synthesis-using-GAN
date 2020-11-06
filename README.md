@@ -22,6 +22,12 @@ GAN 기반의 모델(StarGAN-v2)을 활용해 댜앙한 헤어 스타일의 사�
 
 이렇게 새롭게 생성된 이미지와 해당 이미지의 segmentation map, Src 이미지와 해당 이미지의 segmentation map을 SEAN 모델의 인풋으로 사용하게 됩니다.
 
+'''
+ex. Ref 이미지 스타일을 가져오는 방식
+
+python main.py --mode using_reference --num_domains 7 --resume_iter 100000 --w_hpf 1 --checkpoint_dir expr/checkpoints/celeba_hq --result_dir expr/results/celeba_hq --src_dir assets/representative/celeba_hq/src --ref_dir assets/representative/celeba_hq/ref
+'''
+
 ## #References
 - [StarGAN-v2](https://github.com/clovaai/stargan-v2)
 - [SEAN](https://github.com/ZPdesu/SEAN)
