@@ -4,7 +4,7 @@ easydict
 matplotlib
 opencv-python
 glob3
-pillow==7.0.0
+pillow==7.1.0
 dill
 dominate>=2.3.1 
 scikit-image==0.16.2
