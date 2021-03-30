@@ -3,13 +3,13 @@
 ![Final_results](./assets/final_results.png)
 
 
-## #들어가기에 앞서
+## 들어가기에 앞서
 이 프로젝트는 제 12회 빅데이터 연합동아리 BOAZ 컨퍼런스를 위해 진행한 것으로, 자세한 내용은 [발표 자료](https://www.slideshare.net/BOAZbigdata/12-boaz-gan)와 [영상](https://www.youtube.com/watch?v=v9WjCrZEFeU&t=8s), [프로젝트 회고글](https://comlini8-8.tistory.com/49)에서 확인하실 수 있습니다.
 
-## #프로젝트 소개
-GAN 기반의 모델(StarGAN-v2)을 활용해 댜앙한 헤어 스타일의 사람 이미지를 학습하고, 학습한 헤어 스타일을 가진 이미지를 생성하는 프로젝트입니다. GAN 모델을 거치면서 헤어 스타일 외의 피부톤, 화장등과 같은 다른 특징이 변화한다는 점을 해결하기 위해, Segmentation map 기반의 GAN 모델(SEAN)을 추가적으로 사용하였습니다.<br>
+## 프로젝트 소개
+GAN 기반의 모델(StarGAN-v2)을 활용해 다양한 헤어 스타일의 사람 이미지를 학습하고, 학습한 헤어 스타일을 가진 이미지를 생성하는 프로젝트입니다. GAN 모델을 거치면서 헤어 스타일 외의 피부톤, 화장등과 같은 다른 특징이 변화한다는 점을 해결하기 위해, Segmentation map 기반의 GAN 모델(SEAN)을 추가적으로 사용하였습니다.<br>
 
-## #전체 프로세스
+## 전체 프로세스
 ![process](./assets/process.png)
 모델을 통해 가능한 헤어 스타일 변화는 1)염색과 2)헤어 스타일 적용 크게 두가지로 나뉩니다. 
 
