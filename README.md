@@ -1,5 +1,7 @@
 # Hair-synthesis-using-GAN, 꽤 GAN찮은 헤어살롱
 
+#### 👏🏻 You can check the English version of the Readme [here](https://github.com/HyelinNAM/Hair-synthesis-using-GAN/blob/master/%5BENG%5DREADME.md). 
+
 ![Final_results](./assets/final_results.png)
 
 
