@@ -3,7 +3,7 @@
 ![Final_results](./assets/final_results.png)
 
 ## Before start
-This project was conducted for the 12th 'BOAZ'(Korea Big Data Student Club) Conference. Details can be found in the [presentation materials(pdf](https://www.slideshare.net/BOAZbigdata/12-boaz-gan), [presentation videos](https://www.youtube.com/watch?v=v9WjCrZEFeU&t=8s), and [project memoirs](https://comlini8-8.tistory.com/49). (All of these materials are written in Korean.)
+This project was conducted for the 12th 'BOAZ'(Korea Big Data Student Club) Conference. Details can be found in the [presentation materials](https://www.slideshare.net/BOAZbigdata/12-boaz-gan), [presentation videos](https://www.youtube.com/watch?v=v9WjCrZEFeU&t=8s), and [project memoirs](https://comlini8-8.tistory.com/49). (All of these materials are written in Korean.)
 
 ## Introduction
 This is a project that uses GAN-based models (StarGAN-v2) to learn various hairstyles of people and create images with learned hairstyles. To address changes in other features such as skin and makeup other than hair style throughout the GAN model, we have used the Segmentation map-based GAN model (SEAN) additionally.
