@@ -1,5 +1,8 @@
 # Hair-synthesis-using-GAN
 
+#### ❗ Pre-trained models can no longer be provided due to problems such as performance and contracts. Sorry for not being able to help.
+
+
 ![Final_results](./assets/final_results.png)
 
 ## Before start
