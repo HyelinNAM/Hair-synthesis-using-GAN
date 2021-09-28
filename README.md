@@ -2,6 +2,8 @@
 
 #### 👏🏻 You can check the English version of the Readme [here](https://github.com/HyelinNAM/Hair-synthesis-using-GAN/blob/master/%5BENG%5DREADME.md). 
 
+#### ❗ Pretrained 모델은 성능, 계약 등의 문제로 더 이상 보내드리지 않고 있습니다.
+
 ![Final_results](./assets/final_results.png)
 
 
